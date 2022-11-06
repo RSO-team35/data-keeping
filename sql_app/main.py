@@ -5,11 +5,25 @@ from sqlalchemy.orm import Session
 
 from . import crud, models, schemas
 from .db import SessionLocal, engine
+from .database.init_db import init_db
 
-models.Base.metadata.create_all(bind=engine)
+
+#models.Base.metadata.create_all(bind=engine)
 
 
-app = FastAPI()
+app = FastAPI(title="Primerjalnik cen")
+
+
+@app.on_event("startup")
+def on_startup():
+    models.Base.metadata.drop_all(bind=engine) ## just in case of errors
+    models.Base.metadata.create_all(bind=engine)
+    init_db()
+
+
+@app.on_event("shutdown")
+def on_shutdown():
+    models.Base.metadata.drop_all(bind=engine)
 
 
 def get_db():
@@ -22,6 +36,9 @@ def get_db():
 
 @app.post("/products/", response_model=schemas.Product)
 def create_product(product: schemas.ProductCreate, db: Session = Depends(get_db)):
+    """
+    Add new product to the database
+    """
     db_product = crud.get_product_by_name(db, name=product.name)
     if db_product:
         raise HTTPException(status_code=400, detail="Product with this name already exists")
@@ -44,8 +61,7 @@ def read_product(product_id: int, db: Session = Depends(get_db)):
 
 @app.post("/products/{product_id}/prices/", response_model=schemas.Price)
 def create_price_for_product(
-    product_id: int, price: schemas.PriceCreate, db: Session = Depends(get_db)
-):
+    product_id: int, price: schemas.PriceCreate, db: Session = Depends(get_db)):
     return crud.create_product_price(db=db, price=price, product_id=product_id)
 
 

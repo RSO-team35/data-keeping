@@ -7,7 +7,7 @@ class PriceBase(BaseModel):
     price: int
     date: datetime.datetime
     retailer: str
-    manufacurer: str
+    manufacturer: str
 
 
 class PriceCreate(PriceBase):

@@ -8,7 +8,7 @@ class Product(Base):
     __tablename__ = "products"
 
     id = Column(Integer, primary_key=True, index=True)
-    name = Column(String, unique=True, index=True)
+    name = Column(String, unique=True)
     category = Column(String)
     tags = Column(String)
 
@@ -19,10 +19,10 @@ class Price(Base):
     __tablename__ = "prices"
 
     id = Column(Integer, primary_key=True, index=True)
-    price = Column(Float, index=True)
-    date = Column(DateTime, index=True)
+    price = Column(Float)
+    date = Column(DateTime)
     retailer = Column(String)
-    manufacurer = Column(String)
+    manufacturer = Column(String)
     product_id = Column(Integer, ForeignKey("products.id"))
 
     product = relationship("Product", back_populates="prices")
