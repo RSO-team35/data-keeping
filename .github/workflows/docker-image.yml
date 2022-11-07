@@ -15,4 +15,8 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag data-keeping:$(date +%s)
+      run: docker build . --file Dockerfile --tag data-keeping:latest
+    - name: Upload the docker image
+      uses: ishworkh/docker-image-artifact-upload@v1
+      with:
+        image: "data-keeping:latest"
