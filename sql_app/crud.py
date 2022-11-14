@@ -7,6 +7,13 @@ def get_product(db: Session, product_id: int):
     return db.query(models.Product).filter(models.Product.id == product_id).first()
 
 
+def delete_product(db: Session, product_id: int):
+    status = db.query(models.Product).filter(models.Product.id == product_id).delete()
+    db.query(models.Price).filter(models.Price.product_id == product_id).delete()
+    db.commit()
+    return status
+
+
 def get_product_by_name(db: Session, name: str):
     return db.query(models.Product).filter(models.Product.name == name).first()
 
@@ -33,3 +40,8 @@ def create_product_price(db: Session, price: schemas.PriceCreate, product_id: in
     db.commit()
     db.refresh(db_price)
     return db_price
+
+def delete_price(db: Session, price_id: int):
+    status = db.query(models.Price).filter(models.Price.id == price_id).delete()
+    db.commit()
+    return status

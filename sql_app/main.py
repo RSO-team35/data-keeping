@@ -58,6 +58,16 @@ def read_product(product_id: int, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="Product not found")
     return db_product
 
+@app.delete("/products/{product_id}")
+def delete_product(product_id: int, db: Session = Depends(get_db)):
+    """
+    Delete product and all its associated prices from the database
+    """
+    status = crud.delete_product(db, product_id=product_id)
+    if status == 0:
+        raise HTTPException(status_code=404, detail="Product not found")
+    return {"Deleted":bool(status)}
+
 
 @app.post("/products/{product_id}/prices/", response_model=schemas.Price)
 def create_price_for_product(
@@ -69,3 +79,13 @@ def create_price_for_product(
 def read_prices(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     prices = crud.get_prices(db, skip=skip, limit=limit)
     return prices
+
+@app.delete("/prices/{price_id}")
+def delete_price(price_id: int, db: Session = Depends(get_db)):
+    """
+    Delete price with given id from the database
+    """
+    status = crud.delete_price(db, price_id)
+    if status == 0:
+        raise HTTPException(status_code=404, detail="Price entry not found")
+    return {"Deleted":bool(status)}
