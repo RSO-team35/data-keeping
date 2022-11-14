@@ -27,7 +27,7 @@ def init_db():
                                 date=datetime.datetime(2022, 10, i+1), 
                                 retailer="Amazon", 
                                 manufacturer="ASUS", 
-                                product_id=i%3)
+                                product_id=i%3+1)
         db.add(db_price)
 
     db.commit()
