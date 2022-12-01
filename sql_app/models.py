@@ -1,6 +1,5 @@
 from sqlalchemy import Column, ForeignKey, Integer, String, ARRAY, DateTime, Float
 from sqlalchemy.orm import relationship
-
 from .db import Base
 
 
@@ -26,3 +25,14 @@ class Price(Base):
     product_id = Column(Integer, ForeignKey("products.id"))
 
     product = relationship("Product", back_populates="prices")
+
+
+class Urls(Base):
+    __tablename__ = "urls"
+
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String)
+    retailer = Column(String)
+    model = Column(String)
+    manufacturer = Column(String)
+    url = Column(String)

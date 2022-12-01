@@ -1,5 +1,6 @@
 from sqlalchemy.orm import Session
-
+import requests
+import os
 from . import models, schemas
 
 
@@ -45,3 +46,19 @@ def delete_price(db: Session, price_id: int):
     status = db.query(models.Price).filter(models.Price.id == price_id).delete()
     db.commit()
     return status
+
+
+def update_all_prices(db: Session):
+    # get urls
+    db_urls = db.query(models.Urls).all()
+    # request prices from data acquisition app
+    data_keeping_ip = "http://127.0.0.1:8008/prices/" #os.environ["DATA_KEEPING_PORT"] # locally must change later
+    response = requests.post(data_keeping_ip, json=db_urls)
+    print(response.status_code)
+    # update prices in database
+    new_prices = response.content
+    for price, url in zip(new_prices, db_urls):
+        product = get_product_by_name(db, url.name)
+        create_product_price(db, price=price, product_id=product.id)
+    # fin
+    return get_products(db)

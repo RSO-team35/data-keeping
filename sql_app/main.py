@@ -1,9 +1,9 @@
 from typing import List
 
-from fastapi import Depends, FastAPI, HTTPException
+from fastapi import Depends, FastAPI, HTTPException, BackgroundTasks
 from sqlalchemy.orm import Session
 
-from . import crud, models, schemas
+from . import models, schemas, utility
 from .db import SessionLocal, engine
 from .database.init_db import init_db
 
@@ -39,21 +39,21 @@ def create_product(product: schemas.ProductCreate, db: Session = Depends(get_db)
     """
     Add new product to the database
     """
-    db_product = crud.get_product_by_name(db, name=product.name)
+    db_product = utility.get_product_by_name(db, name=product.name)
     if db_product:
         raise HTTPException(status_code=400, detail="Product with this name already exists")
-    return crud.create_product(db=db, product=product)
+    return utility.create_product(db=db, product=product)
 
 
 @app.get("/products/", response_model=List[schemas.Product])
 def read_products(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
-    products = crud.get_products(db, skip=skip, limit=limit)
+    products = utility.get_products(db, skip=skip, limit=limit)
     return products
 
 
 @app.get("/products/{product_id}", response_model=schemas.Product)
 def read_product(product_id: int, db: Session = Depends(get_db)):
-    db_product = crud.get_product(db, product_id=product_id)
+    db_product = utility.get_product(db, product_id=product_id)
     if db_product is None:
         raise HTTPException(status_code=404, detail="Product not found")
     return db_product
@@ -63,7 +63,7 @@ def delete_product(product_id: int, db: Session = Depends(get_db)):
     """
     Delete product and all its associated prices from the database
     """
-    status = crud.delete_product(db, product_id=product_id)
+    status = utility.delete_product(db, product_id=product_id)
     if status == 0:
         raise HTTPException(status_code=404, detail="Product not found")
     return {"Deleted":bool(status)}
@@ -72,12 +72,12 @@ def delete_product(product_id: int, db: Session = Depends(get_db)):
 @app.post("/products/{product_id}/prices/", response_model=schemas.Price)
 def create_price_for_product(
     product_id: int, price: schemas.PriceCreate, db: Session = Depends(get_db)):
-    return crud.create_product_price(db=db, price=price, product_id=product_id)
+    return utility.create_product_price(db=db, price=price, product_id=product_id)
 
 
 @app.get("/prices/", response_model=List[schemas.Price])
 def read_prices(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
-    prices = crud.get_prices(db, skip=skip, limit=limit)
+    prices = utility.get_prices(db, skip=skip, limit=limit)
     return prices
 
 @app.delete("/prices/{price_id}")
@@ -85,7 +85,16 @@ def delete_price(price_id: int, db: Session = Depends(get_db)):
     """
     Delete price with given id from the database
     """
-    status = crud.delete_price(db, price_id)
+    status = utility.delete_price(db, price_id)
     if status == 0:
         raise HTTPException(status_code=404, detail="Price entry not found")
     return {"Deleted":bool(status)}
+
+
+@app.post("/prices/update/", response_model=List[schemas.Product])
+def update_all_prices(db: Session = Depends(get_db)):
+    products = utility.update_all_prices(db)
+    return products
+
+
+# todo add link
