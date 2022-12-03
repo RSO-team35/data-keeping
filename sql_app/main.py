@@ -131,3 +131,8 @@ def get_retailers(db: Session = Depends(get_db)):
     retailers = utility.get_retailers(db)
     return retailers
 
+
+@app.get("/product/urls/", response_model=List[schemas.Url])
+def get_urls(db: Session = Depends(get_db)):
+    urls = utility.get_urls(db)
+    return urls

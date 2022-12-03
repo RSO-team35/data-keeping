@@ -58,12 +58,12 @@ def update_all_prices(db: Session):
     # print(type(db_urls[0]))
     # print(dict(db_urls[0]))
     # request prices from data acquisition app
-    data_keeping_ip = "http://127.0.0.1:8008/prices/" #os.environ["DATA_KEEPING_PORT"] # locally must change later
+    data_acq_ip = os.environ["data_acquisition_ip"] # locally must change later
     headers = {
     'accept': 'application/json',
     'Content-Type': 'application/json',
     }
-    response = requests.post(data_keeping_ip, json=db_urls_dict, headers=headers)
+    response = requests.post(f"http://{data_acq_ip}/prices/", json=db_urls_dict, headers=headers)
     print(response.status_code)
     # print(response)
     # update prices in database
@@ -80,6 +80,10 @@ def update_all_prices(db: Session):
     # fin
     return get_products(db)
 
+
+def get_urls(db: Session):
+    db_urls = db.query(models.Url).all()
+    return db_urls
 
 def get_retailers(db: Session):
     db_retailers = db.query(models.Url.retailer).distinct().all()
