@@ -7,6 +7,7 @@ from . import models, schemas, utility
 from .db import SessionLocal, engine
 from .database.init_db import init_db, init_urls
 
+import os
 
 #models.Base.metadata.create_all(bind=engine)
 app = FastAPI(title="Primerjalnik cen")
@@ -46,6 +47,9 @@ def create_product(product: schemas.ProductCreate, db: Session = Depends(get_db)
 
 @app.get("/products/", response_model=List[schemas.Product])
 def read_products(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
+
+    #print("ip of scraper app is set to: ", os.environ["data-acquisition-ip"])
+
     products = utility.get_products(db, skip=skip, limit=limit)
     return products
 
@@ -127,6 +131,3 @@ def get_retailers(db: Session = Depends(get_db)):
     retailers = utility.get_retailers(db)
     return retailers
 
-
-
-# todo add link

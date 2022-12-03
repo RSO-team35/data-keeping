@@ -16,10 +16,10 @@ jobs:
     - uses: actions/checkout@v3
     - name: Build the Docker image
       run: docker build . --file Dockerfile --tag data-keeping:latest
-    - name: Upload the docker image
-      uses: ishworkh/docker-image-artifact-upload@v1
-      with:
-        image: "data-keeping:latest"
+#    - name: Upload the docker image
+#      uses: ishworkh/docker-image-artifact-upload@v1
+#      with:
+#        image: "data-keeping:latest"
 
     - name: Get current time
       id: current-time
@@ -39,4 +39,6 @@ jobs:
       with:
         file: ./Dockerfile
         push: true
-        tags: ${{ secrets.DOCKERHUB_USERNAME }}/rso:${{ steps.current-time.outputs.formattedTime }}
+        tags: |
+          ${{ secrets.DOCKERHUB_USERNAME }}/rso-data-keeping:${{ steps.current-time.outputs.formattedTime }}
+          ${{ secrets.DOCKERHUB_USERNAME }}/rso-data-keeping:latest
