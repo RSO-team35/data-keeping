@@ -1,0 +1,50 @@
+{
+    "Mimovrste": 
+        {
+            "GeForce RTX 3060": 
+                {   
+                    "ASUS Dual OC": "https://www.mimovrste.com/graficne-kartice-nvidia/asus-geforce-rtx-3060-ti-dual-oc-graficna-kartica-8-gb-gddr6-lhr-90yv0g1j-m0na00",
+                    "Manli": "https://www.mimovrste.com/graficne-kartice-nvidia/manli-geforce-rtx-3060-lhr-gallardo-m2510n630-graficna-kartica-12-gb-gddr6-m-nrtx3060g-m2510",
+                    "ASUS Dual": "https://www.mimovrste.com/graficne-kartice-nvidia/asus-dual-geforce-rtx-3060-v2-oc-graficna-kartica-12-gb-gddr6-90yv0gb2-m0na10-",
+                    "ASUS TUF Gaming": "https://www.mimovrste.com/graficne-kartice-nvidia/asus-tuf-geforce-rtx-3060-gaming-oc-v2-graficna-kartica-12gb-gddr6-pci-e-40-tuf-rtx3060-o12g-v2-gaming",
+                    "Manli Gallardo": "https://www.mimovrste.com/graficne-kartice-nvidia/manli-geforce-rtx-3060-lhr-m2500n630-graficna-kartica-12-gb-gddr6-m-nrtx3060-m2500"
+                },
+            "GeForce RTX 3090": 
+                {
+                    "Gainward": "https://www.mimovrste.com/graficne-kartice-nvidia/gainward-geforce-rtx-3090-phantom-graficna-kartica-24-gb-gddr6x",
+                    "ASUS ROG Strix": "https://www.mimovrste.com/graficne-kartice-nvidia/asus-rog-strix-gaming-oc-geforce-rtx-3090-graficna-kartica-24-gb-gddr6x",
+                    "ASUS TUF Gaming": "https://www.mimovrste.com/graficne-kartice-nvidia/asus-tuf-gaming-geforce-rtx-3090-graficna-kartica-24-gb-gddr6x"
+                }
+        },
+    "Amazon":
+        {
+            "GeForce RTX 3090 Ti":
+                {
+                    "Zotac Gaming": "https://www.amazon.de/-/en/Gaming-GeForce-Extreme-NVIDIA-ZT-A30910B-10P/dp/B09X3N1W96/ref=sr_1_omk_4?crid=3BCNFT7XZMI0J&keywords=3090&qid=1667806991&sprefix=3090%2Caps%2C134&sr=8-4"
+                },
+            "GeForce RTX 3090": 
+                {
+                    "ASUS TUF Gaming": "https://www.amazon.de/ASUS-TUF-RTX3090-O24G-GAMING-TUF-RTX3090-24G-GAMING/dp/B08HN5B8FJ?ref_=ast_sto_dp&th=1&psc=1",
+                    "ASUS ROG Strix": "https://www.amazon.de/-/en/ROG-STRIX-RTX3090-O24G-GAMING-ROG-STRIX-RTX3090-GAMING-Graphics-Card/dp/B08HN51T8Q?ref_=ast_sto_dp&th=1&psc=1",
+                    "Zotac AMP Extreme Holo": "https://www.amazon.de/Zotac-3090-Extreme-Holo-GDDR6X/dp/B0974YVB9D?ref_=ast_sto_dp",
+                    "Zotac Arctic Storm": "https://www.amazon.de/Zotac-3090-Arctic-Storm-ZT-A30900Q-30P/dp/B0966TC82X?ref_=ast_sto_dp&th=1",
+                    "Zotac Trinity OC": "https://www.amazon.de/Zotac-3090-Trinity-24GB-GDDR6X/dp/B08TZD9SH9?ref_=ast_sto_dp",
+                    "Gigabyte Gaming OC": "https://www.amazon.de/Gigabyte-GeForce-Gaming-GDDR6X-Graphics/dp/B08HLYQ9XL?ref_=ast_sto_dp"
+                },
+            "GeForce RTX 3060":
+                {
+                    "ASUS Phoenix": "https://www.amazon.de/Phoenix-Graphics-DisplayPort-PH-RTX3060-12G-V2-0GB4-M0NA10/dp/B0974XXKC1?ref_=ast_sto_dp",
+                    "ASUS TUF Gaming": "https://www.amazon.de/GeForce-RTX3060-Graphics-DisplayPort-TUF-RTX3060/dp/B0966689N3?ref_=ast_sto_dp",
+                    "Zotac Twin Edge OC": "https://www.amazon.de/Zotac-RTX3060-Twin-Edge-GDDR6/dp/B08WRK84PS?ref_=ast_sto_dp",
+                    "Zotac AMP White Edition": "https://www.amazon.de/Zotac-RTX3060-AMP-White-GDDR6/dp/B08WRV24YD?ref_=ast_sto_dp",
+                    "Gigabyte Gaming OC": "https://www.amazon.de/RTX3060-Gaming-GDDR6-2xHDMI-3xDP/dp/B08WB6R2K4?ref_=ast_sto_dp", 
+                    "Gigabyte Eagle OC": "https://www.amazon.de/RTX3060-Eagle-GDDR6-2xHDMI-3xDP/dp/B08WBB3ZMJ?ref_=ast_sto_dp"
+                },
+            "GeForce RTX 4090":
+                {
+                    "Gigabyte Windforce": "https://www.amazon.de/Gigabyte-GeForce-Windforce-GDDR6-Express/dp/B0BHWCKZS9?ref_=ast_sto_dp",
+                    "Gigabyte Gaming OC": "https://www.amazon.de/Gigabyte-RTX4090-Gaming-GV-N4090GAMING-OC-24GD/dp/B0BH8MK76C?ref_=ast_sto_dp"
+                }
+
+        }
+}

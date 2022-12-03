@@ -5,25 +5,24 @@ from sqlalchemy.orm import Session
 
 from . import models, schemas, utility
 from .db import SessionLocal, engine
-from .database.init_db import init_db
+from .database.init_db import init_db, init_urls
 
 
 #models.Base.metadata.create_all(bind=engine)
-
-
 app = FastAPI(title="Primerjalnik cen")
 
 
 @app.on_event("startup")
 def on_startup():
-    models.Base.metadata.drop_all(bind=engine) ## just in case of errors
-    models.Base.metadata.create_all(bind=engine)
-    init_db()
-
-
-@app.on_event("shutdown")
-def on_shutdown():
-    models.Base.metadata.drop_all(bind=engine)
+    # models.Base.metadata.drop_all(bind=engine) ## just in case of errors
+    # models.Base.metadata.create_all(bind=engine)
+    db_tables = engine.table_names()
+    if "products" not in db_tables:
+        print(f"Creating product entries")
+        init_db()
+    if "urls" not in db_tables:
+        print(f"Creating url entries")
+        init_urls()
 
 
 def get_db():
@@ -58,6 +57,7 @@ def read_product(product_id: int, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="Product not found")
     return db_product
 
+
 @app.delete("/products/{product_id}")
 def delete_product(product_id: int, db: Session = Depends(get_db)):
     """
@@ -80,6 +80,31 @@ def read_prices(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     prices = utility.get_prices(db, skip=skip, limit=limit)
     return prices
 
+
+@app.get("/products/name={product_name}/prices/", response_model=List[schemas.Price])
+def read_prices_by_name(product_name: str, db: Session = Depends(get_db)):
+    prices = utility.get_prices_by_name(db, name=product_name)
+    if prices is None:
+        raise HTTPException(status_code=404, detail="Product not found")
+    return prices
+
+
+@app.get("/products/{product_id}/prices/", response_model=List[schemas.Price])
+def read_prices_by_id(product_id: int, db: Session = Depends(get_db)):
+    prices = utility.get_prices_by_id(db, id=product_id)
+    if prices is None:
+        raise HTTPException(status_code=404, detail="Product not found")
+    return prices
+
+
+@app.get("/products/{product_id}/lowest_price/", response_model=schemas.Price)
+def read_lowest_price(product_id: int, db: Session = Depends(get_db)):
+    prices = utility.get_lowest_price(db, id=product_id)
+    if prices is None:
+        raise HTTPException(status_code=404, detail="Product not found")
+    return prices
+
+
 @app.delete("/prices/{price_id}")
 def delete_price(price_id: int, db: Session = Depends(get_db)):
     """
@@ -95,6 +120,13 @@ def delete_price(price_id: int, db: Session = Depends(get_db)):
 def update_all_prices(db: Session = Depends(get_db)):
     products = utility.update_all_prices(db)
     return products
+
+
+@app.get("/retailers/", response_model=List[str])
+def get_retailers(db: Session = Depends(get_db)):
+    retailers = utility.get_retailers(db)
+    return retailers
+
 
 
 # todo add link

@@ -27,7 +27,7 @@ class Price(Base):
     product = relationship("Product", back_populates="prices")
 
 
-class Urls(Base):
+class Url(Base):
     __tablename__ = "urls"
 
     id = Column(Integer, primary_key=True, index=True)

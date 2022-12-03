@@ -41,7 +41,7 @@ class Product(ProductBase):
         orm_mode = True
 
 
-class ProductSpec(BaseModel):
+class Url(BaseModel):
     retailer: str # could create custom type
     manufacturer: str
     model: str # Zotac Gaming etc
@@ -55,7 +55,7 @@ class ProductSpec(BaseModel):
                 "retailer": "Mimovrste",
                 "manufacturer": "ASUS",
                 "model": "ASUS ROG Strix",
-                "name": "NVIDIA RTX 3090",
+                "name": "GeForce RTX 3090",
                 "url": "https://www.mimovrste.com/graficne-kartice-nvidia/asus-rog-strix-gaming-oc-geforce-rtx-3090-graficna-kartica-24-gb-gddr6x",
             }
         }
