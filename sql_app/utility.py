@@ -55,22 +55,17 @@ def update_all_prices(db: Session):
     # get urls
     db_urls = db.query(models.Url).all()
     db_urls_dict = [dict(schemas.Url.from_orm(d)) for d in db_urls]
-    # print(type(db_urls[0]))
-    # print(dict(db_urls[0]))
     # request prices from data acquisition app
-    data_acq_ip = os.environ["data_acquisition_ip"] # locally must change later
+    data_acq_ip = os.environ["DATA_ACQUISITION_IP"] # locally must change later
     headers = {
     'accept': 'application/json',
     'Content-Type': 'application/json',
     }
     response = requests.post(f"http://{data_acq_ip}/prices/", json=db_urls_dict, headers=headers)
     print(response.status_code)
-    # print(response)
     # update prices in database
     new_prices = response.json()
-    # print(new_prices)
     for price, url in zip(new_prices, db_urls):
-        # print(price)
         price["date"] = datetime.datetime.fromisoformat(price["date"])
         product = get_product_by_name(db, url.name)
         db_price = models.Price(**price, product_id=product.id)
