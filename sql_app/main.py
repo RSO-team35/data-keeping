@@ -7,16 +7,27 @@ from . import models, schemas, utility
 from .db import SessionLocal, engine
 from .database.init_db import init_db, init_urls
 
-import os
 
-#models.Base.metadata.create_all(bind=engine)
-app = FastAPI(title="Primerjalnik cen")
+description = "Service for data keeping and organization"
+tags_metadata = [
+    {
+        "name": "products",
+        "description": "Operations with GPU products"
+    },
+    {
+        "name": "prices",
+        "description": "Operations with price data"
+    }
+]
+
+app = FastAPI(title="Price comparison", description=description, openapi_tags=tags_metadata)
 
 
 @app.on_event("startup")
 def on_startup():
-    # models.Base.metadata.drop_all(bind=engine) ## just in case of errors
-    # models.Base.metadata.create_all(bind=engine)
+    """
+    Initialize database if it does not exist
+    """
     db_tables = engine.table_names()
     if "products" not in db_tables:
         print(f"Creating product entries")
@@ -34,7 +45,7 @@ def get_db():
         db.close()
 
 
-@app.post("/products/", response_model=schemas.Product)
+@app.post("/products/", response_model=schemas.Product, tags=["products"])
 def create_product(product: schemas.ProductCreate, db: Session = Depends(get_db)):
     """
     Add new product to the database
@@ -45,24 +56,27 @@ def create_product(product: schemas.ProductCreate, db: Session = Depends(get_db)
     return utility.create_product(db=db, product=product)
 
 
-@app.get("/products/", response_model=List[schemas.Product])
-def read_products(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
-
-    #print("ip of scraper app is set to: ", os.environ["data-acquisition-ip"])
-
-    products = utility.get_products(db, skip=skip, limit=limit)
+@app.get("/products/", response_model=List[schemas.Product], tags=["products"])
+def read_products(db: Session = Depends(get_db)):
+    """
+    Get list of all products
+    """
+    products = utility.get_products(db)
     return products
 
 
-@app.get("/products/{product_id}", response_model=schemas.Product)
+@app.get("/products/{product_id}", response_model=schemas.Product, tags=["products"])
 def read_product(product_id: int, db: Session = Depends(get_db)):
+    """
+    Get product with <product_id>
+    """
     db_product = utility.get_product(db, product_id=product_id)
     if db_product is None:
         raise HTTPException(status_code=404, detail="Product not found")
     return db_product
 
 
-@app.delete("/products/{product_id}")
+@app.delete("/products/{product_id}", tags=["products"])
 def delete_product(product_id: int, db: Session = Depends(get_db)):
     """
     Delete product and all its associated prices from the database
@@ -73,43 +87,57 @@ def delete_product(product_id: int, db: Session = Depends(get_db)):
     return {"Deleted":bool(status)}
 
 
-@app.post("/products/{product_id}/prices/", response_model=schemas.Price)
-def create_price_for_product(
-    product_id: int, price: schemas.PriceCreate, db: Session = Depends(get_db)):
+@app.post("/products/{product_id}/prices/", response_model=schemas.Price, tags=["products"])
+def create_price_for_product(product_id: int, price: schemas.PriceCreate, db: Session = Depends(get_db)):
+    """
+    Create new price entry for a product with <product_id>
+    """
     return utility.create_product_price(db=db, price=price, product_id=product_id)
 
 
-@app.get("/prices/", response_model=List[schemas.Price])
-def read_prices(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
-    prices = utility.get_prices(db, skip=skip, limit=limit)
+@app.get("/prices/", response_model=List[schemas.Price], tags=["prices"])
+def read_prices(db: Session = Depends(get_db)):
+    """
+    Get all saved prices
+    """
+    prices = utility.get_prices(db)
     return prices
 
 
-@app.get("/products/name={product_name}/prices/", response_model=List[schemas.Price])
+@app.get("/products/name={product_name}/prices/", response_model=List[schemas.Price], tags=["products"])
 def read_prices_by_name(product_name: str, db: Session = Depends(get_db)):
+    """
+    Get all prices for a product with <name>
+    """
     prices = utility.get_prices_by_name(db, name=product_name)
     if prices is None:
         raise HTTPException(status_code=404, detail="Product not found")
     return prices
 
 
-@app.get("/products/{product_id}/prices/", response_model=List[schemas.Price])
+@app.get("/products/{product_id}/prices/", response_model=List[schemas.Price], tags=["products"])
 def read_prices_by_id(product_id: int, db: Session = Depends(get_db)):
+    """
+    Get all prices for a product with <product_id>
+    """
     prices = utility.get_prices_by_id(db, id=product_id)
     if prices is None:
         raise HTTPException(status_code=404, detail="Product not found")
     return prices
 
 
-@app.get("/products/{product_id}/lowest_price/", response_model=schemas.Price)
+@app.get("/products/{product_id}/lowest_price/", response_model=schemas.Price, tags=["products"])
 def read_lowest_price(product_id: int, db: Session = Depends(get_db)):
+    """
+    Get lowest price for a product with <product_id>
+    """
     prices = utility.get_lowest_price(db, id=product_id)
     if prices is None:
         raise HTTPException(status_code=404, detail="Product not found")
     return prices
 
 
-@app.delete("/prices/{price_id}")
+@app.delete("/prices/{price_id}", tags=["prices"])
 def delete_price(price_id: int, db: Session = Depends(get_db)):
     """
     Delete price with given id from the database
@@ -120,19 +148,28 @@ def delete_price(price_id: int, db: Session = Depends(get_db)):
     return {"Deleted":bool(status)}
 
 
-@app.post("/prices/update/", response_model=List[schemas.Product])
+@app.post("/prices/update/", response_model=List[schemas.Product], tags=["prices"])
 def update_all_prices(db: Session = Depends(get_db)):
+    """
+    Create new prices entry for all products from live data
+    """
     products = utility.update_all_prices(db)
     return products
 
 
-@app.get("/retailers/", response_model=List[str])
+@app.get("/retailers/", response_model=List[str], tags=["products"])
 def get_retailers(db: Session = Depends(get_db)):
+    """
+    Get all retailers available
+    """
     retailers = utility.get_retailers(db)
     return retailers
 
 
-@app.get("/product/urls/", response_model=List[schemas.Url])
+@app.get("/products/urls/", response_model=List[schemas.Url], tags=["products"])
 def get_urls(db: Session = Depends(get_db)):
+    """
+    Get all saved urls for price acquisition
+    """
     urls = utility.get_urls(db)
     return urls

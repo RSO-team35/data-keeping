@@ -29,12 +29,12 @@ class ProductBase(BaseModel):
     
 
 class ProductCreate(ProductBase):
-    prices: Union[List[PriceBase], None] = None
+    prices: Union[List[Price], None] = None
     #price: Union[PriceBase, None] = None # when creating this will be unset
     #price: Union[float, None] = None this is when param is optional
 
 
-class Product(ProductBase):
+class Product(ProductCreate):
     id: int
 
     class Config:
