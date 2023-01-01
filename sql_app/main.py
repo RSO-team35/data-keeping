@@ -8,6 +8,9 @@ from . import models, schemas, utility
 from .db import SessionLocal, engine
 from .database.init_db import init_db, init_urls
 
+import strawberry
+from strawberry.fastapi import GraphQLRouter
+
 
 description = "Service for data keeping and organization"
 tags_metadata = [
@@ -21,6 +24,16 @@ tags_metadata = [
     }
 ]
 
+@strawberry.type
+class Query:
+    @strawberry.field
+    def hello(self) -> str:
+        return "Hello World"
+
+schema = strawberry.Schema(Query)
+
+graphql_app = GraphQLRouter(schema,graphiql=True)
+
 app = FastAPI(title="Price comparison", description=description, openapi_tags=tags_metadata)
 
 app.add_middleware(
@@ -30,6 +43,8 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+app.include_router(graphql_app, prefix="/graphql")
 
 @app.on_event("startup")
 def on_startup():

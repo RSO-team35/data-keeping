@@ -20,18 +20,18 @@ def init_db():
         db.add(db_product)
     db.commit()
 
-    # prices = [350, 400, 299, 600, 560]
+    prices = [350, 400, 299, 600, 560]
 
-    # for i, p in enumerate(prices):
-    #     db_price = models.Price(price=p, 
-    #                             date=datetime.datetime(2022, 10, i+1), 
-    #                             retailer="Amazon", 
-    #                             manufacturer="ASUS", 
-    #                             product_id=i%3+1)
-    #     db.add(db_price)
+    for i, p in enumerate(prices):
+        db_price = models.Price(price=p, 
+                                date=datetime.datetime(2022, 10, i+1), 
+                                retailer="Amazon", 
+                                manufacturer="ASUS", 
+                                product_id=i%3+1)
+        db.add(db_price)
 
-    # db.commit()
-    # db.close()
+    db.commit()
+    db.close()
 
 
 def init_urls():
