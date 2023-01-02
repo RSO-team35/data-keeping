@@ -9,7 +9,7 @@ RUN pip3 install --no-cache-dir -r requirements.txt
 
 COPY . /usr/src/app
 
-ENV data-acquisition-ip 127.0.0.1:8001
+ENV DATA_ACQUISITION_IP 127.0.0.1:8001
 
 EXPOSE 8000
 

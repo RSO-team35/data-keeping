@@ -1,6 +1,7 @@
 from typing import List
 
 from fastapi import Depends, FastAPI, HTTPException, BackgroundTasks
+from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 
 from . import models, schemas, utility
@@ -22,6 +23,13 @@ tags_metadata = [
 
 app = FastAPI(title="Price comparison", description=description, openapi_tags=tags_metadata)
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 @app.on_event("startup")
 def on_startup():

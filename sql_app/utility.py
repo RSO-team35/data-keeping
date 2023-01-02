@@ -60,7 +60,7 @@ async def update_all_prices(db: Session):
     # print(dict(db_urls[0]))
     # request prices from data acquisition app
     try: 
-        data_acq_ip = os.environ["data_acquisition_ip"]
+        data_acq_ip = os.environ["DATA_ACQUISITION_IP"]
     except:
         data_acq_ip = "0.0.0.0:8001"# # locally must change later
 
