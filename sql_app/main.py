@@ -148,13 +148,14 @@ def delete_price(price_id: int, db: Session = Depends(get_db)):
     return {"Deleted":bool(status)}
 
 
-@app.post("/prices/update/", response_model=List[schemas.Product], tags=["prices"])
-def update_all_prices(db: Session = Depends(get_db)):
+@app.post("/prices/update/", tags=["prices"])
+async def update_all_prices(background_tasks: BackgroundTasks, db: Session = Depends(get_db)):
     """
     Create new prices entry for all products from live data
     """
-    products = utility.update_all_prices(db)
-    return products
+    background_tasks.add_task(utility.update_all_prices, db)
+    #products = await utility.update_all_prices(db)
+    return {"message": "Updating prices in the background"}
 
 
 @app.get("/retailers/", response_model=List[str], tags=["products"])

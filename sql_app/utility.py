@@ -1,7 +1,8 @@
 from sqlalchemy.orm import Session
 from sqlalchemy import func
-import requests
+import httpx
 import os
+import time
 import datetime
 from . import models, schemas
 
@@ -51,34 +52,49 @@ def delete_price(db: Session, price_id: int):
     return status
 
 
-def update_all_prices(db: Session):
+async def update_all_prices(db: Session):
     # get urls
-    db_urls = db.query(models.Url).all()
-    db_urls_dict = [dict(schemas.Url.from_orm(d)) for d in db_urls]
+    #db_urls = db.query(models.Url).all()
+    #db_urls_dict = [dict(schemas.Url.from_orm(d)) for d in db_urls]
     # print(type(db_urls[0]))
     # print(dict(db_urls[0]))
     # request prices from data acquisition app
-    data_acq_ip = os.environ["data_acquisition_ip"] # locally must change later
+    try: 
+        data_acq_ip = os.environ["data_acquisition_ip"]
+    except:
+        data_acq_ip = "0.0.0.0:8001"# # locally must change later
+
     headers = {
     'accept': 'application/json',
     'Content-Type': 'application/json',
     }
-    response = requests.post(f"http://{data_acq_ip}/prices/", json=db_urls_dict, headers=headers)
-    print(response.status_code)
+    print("requesting prices...")
+    t1 = time.time()
+    #response = requests.post(f"http://{data_acq_ip}/prices/", json=db_urls_dict, headers=headers)
+    async with httpx.AsyncClient() as client:
+        response = await client.get(f"http://{data_acq_ip}/prices/", headers=headers, timeout=300)
+    t2 = time.time()
+    print(f"Status: {response.status_code}, duration: {t2-t1}s")
     # print(response)
     # update prices in database
     new_prices = response.json()
+    print("saving new prices...")
     # print(new_prices)
-    for price, url in zip(new_prices, db_urls):
-        # print(price)
+    for price in new_prices:
+        #print(price)
         price["date"] = datetime.datetime.fromisoformat(price["date"])
-        product = get_product_by_name(db, url.name)
-        db_price = models.Price(**price, product_id=product.id)
-        db.add(db_price)
-        db.commit()
-        db.refresh(db_price)
+        #print(price["date"])
+        product = get_product_by_name(db, price["name"])
+        #model=item.model, name=item.name, price=item_price.price, date=item_price.date, retailer=item_price.retailer, manufacturer=item_price.manufacturer
+        # db_price = models.Price(price=price["price"], retailer=price["retailer"], manufacturer=price["manufacturer"], date=price["date"], product_id=product.id)
+        # db.add(db_price)
+        # db.commit()
+        # db.refresh(db_price)
+        db_price = schemas.PriceCreate(price=price["price"], date=price["date"], retailer=price["retailer"], manufacturer=price["manufacturer"])
+        create_product_price(db, price=db_price, product_id=product.id)
     # fin
-    return get_products(db)
+    print("new prices saved")
+    return #get_products(db)
 
 
 def get_urls(db: Session):

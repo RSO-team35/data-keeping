@@ -46,5 +46,12 @@
                     "Gigabyte Gaming OC": "https://www.amazon.de/Gigabyte-RTX4090-Gaming-GV-N4090GAMING-OC-24GD/dp/B0BH8MK76C?ref_=ast_sto_dp"
                 }
 
+        },
+    "Microcenter":
+        {
+            "GeForce RTX 3060":
+                {
+                    "ASUS Dual OC": "https://www.microcenter.com/product/661726/asus-nvidia-geforce-rtx-3060-dual-overclocked-dual-8gb-gddr6-pcie-40-graphics-card"
+                }
         }
 }
