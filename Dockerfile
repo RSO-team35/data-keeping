@@ -15,4 +15,4 @@ EXPOSE 8000
 
 ENTRYPOINT ["python3"]
 
-CMD ["-m", "uvicorn", "sql_app.main:app", "--host", "0.0.0.0"]
+CMD ["-m", "uvicorn", "sql_app.main:app", "--host", "0.0.0.0","--root-path","/data"]
