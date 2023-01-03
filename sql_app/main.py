@@ -4,10 +4,12 @@ from fastapi import Depends, FastAPI, HTTPException, BackgroundTasks
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 
-from . import models, schemas, utility
+from . import models, schemas, utility, graphql
+from .utility import get_db
 from .db import SessionLocal, engine
 from .database.init_db import init_db, init_urls
 
+from strawberry.fastapi import GraphQLRouter
 
 description = "Service for data keeping and organization"
 tags_metadata = [
@@ -21,8 +23,11 @@ tags_metadata = [
     }
 ]
 
+graphql_app = GraphQLRouter(graphql.schema,graphiql=True)
+
 app = FastAPI(title="Price comparison", description=description, openapi_tags=tags_metadata)
 
+#maybe remove if api calls wont be done directly from frontend?
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -30,6 +35,8 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+app.include_router(graphql_app, prefix="/graphql",tags=["products"])
 
 @app.on_event("startup")
 def on_startup():
@@ -43,14 +50,6 @@ def on_startup():
     if "urls" not in db_tables:
         print(f"Creating url entries")
         init_urls()
-
-
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
 
 
 @app.post("/products/", response_model=schemas.Product, tags=["products"])

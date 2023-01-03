@@ -6,6 +6,14 @@ import time
 import datetime
 from . import models, schemas
 
+from .db import SessionLocal
+
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
 
 def get_product(db: Session, product_id: int):
     return db.query(models.Product).filter(models.Product.id == product_id).first()
