@@ -6,8 +6,8 @@ from sqlalchemy.orm import Session
 
 from . import models, schemas, utility, graphql
 from .utility import get_db
-from .db import SessionLocal, engine
-from .database.init_db import init_db, init_urls
+from .db import SessionLocal, engine, use_postgres
+from .database.init_db import init_db, init_urls, create_db
 
 from strawberry.fastapi import GraphQLRouter
 
@@ -25,7 +25,7 @@ tags_metadata = [
 
 graphql_app = GraphQLRouter(graphql.schema,graphiql=True)
 
-app = FastAPI(title="Price comparison", description=description, openapi_tags=tags_metadata)
+app = FastAPI(title="Price comparison", description=description, openapi_tags=tags_metadata, docs_url="/openapi")
 
 #maybe remove if api calls wont be done directly from frontend?
 app.add_middleware(
@@ -44,9 +44,11 @@ def on_startup():
     Initialize database if it does not exist
     """
     db_tables = engine.table_names()
+
     if "products" not in db_tables:
         print(f"Creating product entries")
-        init_db()
+        create_db()
+
     if "urls" not in db_tables:
         print(f"Creating url entries")
         init_urls()
@@ -181,3 +183,12 @@ def get_urls(db: Session = Depends(get_db)):
     """
     urls = utility.get_urls(db)
     return urls
+
+
+@app.get("/test/", tags=["products"])
+def get_test(db: Session = Depends(get_db)):
+    """
+    Get all saved urls for price acquisition
+    """
+    create_db_pg()
+    return "hehe"

@@ -1,11 +1,9 @@
 from typing import List
-
 from . import utility
 from .utility import get_db
-
 import strawberry
-
 import datetime
+
 
 @strawberry.type
 class GQL_Price:
@@ -23,6 +21,7 @@ class GQL_Product:
     category: str
     tags: str
     prices: List[GQL_Price]
+
 
 def get_gql_product():
     db = next(get_db())
@@ -45,8 +44,10 @@ def get_gql_product():
         )
     for product in products]    
 
+
 @strawberry.type
 class Query:
     products: List[GQL_Product] = strawberry.field(resolver=get_gql_product)
+
 
 schema = strawberry.Schema(Query)

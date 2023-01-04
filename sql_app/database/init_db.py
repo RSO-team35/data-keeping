@@ -34,6 +34,63 @@ def init_db():
     db.close()
 
 
+def create_db():
+    db = SessionLocal()
+
+    models.Base.metadata.create_all(bind=engine)
+
+    with open("sql_app/database/export_products.json", "r") as f:
+        products_data = json.load(f)[0]
+        header = products_data["header"]
+        products = products_data["rows"]
+
+    #print(products)
+
+    for row in products:
+        db_product = models.Product(id=int(row[0]), 
+                                    name=row[1],
+                                    category=row[2],
+                                    tags=row[3],
+                                    prices=[])
+
+        db.add(db_product)
+    db.commit()
+    db.close()
+
+    with open("sql_app/database/export_prices.json", "r") as f:
+        prices_data = json.load(f)[0]
+        header = prices_data["header"]
+        prices = prices_data["rows"]
+
+    #print(prices)
+
+    for row in prices:
+        db_price = models.Price(id=int(row[0]), 
+                                    price=float(row[1]),
+                                    date=datetime.datetime.fromisoformat(row[2]),
+                                    retailer=row[3],
+                                    manufacturer=row[4],
+                                    product_id=int(row[5]))
+        db.add(db_price)
+    db.commit()
+    db.close()
+
+
+import pandas as pd 
+import random 
+import numpy as np
+
+def create_df(num=20, p=300):
+    df = pd.DataFrame({
+                    "retailer": [random.choice(["Mimovrste", "Amazon", "Microcenter"]) for _ in range(num)],
+                    "model": np.resize(["Dual OC", "Dual", "TUF GAming", "", "ROG Strix"], num), 
+                    "manufacturer": np.resize(["ASUS", "Zotac"], num),
+                    "price": [round(p + random.uniform(-p*0.1, p*0.1), 2) for _ in range(num)],
+                    "date": pd.date_range(datetime.datetime.today(), periods=num).tolist()
+                })
+    return df
+    
+
 def init_urls():
     db = SessionLocal()
 
