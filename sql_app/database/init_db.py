@@ -47,15 +47,13 @@ def create_db():
     #print(products)
 
     for row in products:
-        db_product = models.Product(id=int(row[0]), 
-                                    name=row[1],
+        db_product = models.Product(name=row[1],
                                     category=row[2],
                                     tags=row[3],
                                     prices=[])
 
         db.add(db_product)
     db.commit()
-    db.close()
 
     with open("sql_app/database/export_prices.json", "r") as f:
         prices_data = json.load(f)[0]
@@ -65,8 +63,7 @@ def create_db():
     #print(prices)
 
     for row in prices:
-        db_price = models.Price(id=int(row[0]), 
-                                    price=float(row[1]),
+        db_price = models.Price(price=float(row[1]),
                                     date=datetime.datetime.fromisoformat(row[2]),
                                     retailer=row[3],
                                     manufacturer=row[4],
