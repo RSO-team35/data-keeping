@@ -185,10 +185,10 @@ def get_urls(db: Session = Depends(get_db)):
     return urls
 
 
-@app.get("/test/", tags=["products"])
-def get_test(db: Session = Depends(get_db)):
-    """
-    Get all saved urls for price acquisition
-    """
-    create_db_pg()
-    return "hehe"
+# @app.get("/test/", tags=["products"])
+# def get_test(db: Session = Depends(get_db)):
+#     """
+#     Get all saved urls for price acquisition
+#     """
+#     create_db_pg()
+#     return "hehe"

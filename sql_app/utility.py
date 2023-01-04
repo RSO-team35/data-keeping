@@ -71,7 +71,7 @@ async def update_all_prices(db: Session):
         data_acq_ip = os.environ["DATA_ACQUISITION_IP"]
     except:
         data_acq_ip = "0.0.0.0:8001"# # locally must change later
-
+    print(f"data acquisition ip: {data_acq_ip}")
     headers = {
     'accept': 'application/json',
     'Content-Type': 'application/json',
