@@ -5,11 +5,14 @@ import os
 
 try:
     use_postgres = os.environ["DB_POSTGRES"]
+    postgres_user = os.environ["DB_USER"]
+    postgres_pass = os.environ["DB_PASS"]
+    postgres_host = os.environ["DB_HOST"]
 except:
     use_postgres = False
 
 if use_postgres:
-    SQLALCHEMY_DATABASE_URL = 'postgresql+psycopg2://postgres:postgres@localhost/sql_app'
+    SQLALCHEMY_DATABASE_URL = f'postgresql+psycopg2://{postgres_user}:{postgres_pass}@{postgres_host}/postgres'
 
     engine = create_engine(
         SQLALCHEMY_DATABASE_URL
