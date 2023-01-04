@@ -75,20 +75,6 @@ def create_db():
     db.commit()
     db.close()
 
-
-import pandas as pd 
-import random 
-import numpy as np
-
-def create_df(num=20, p=300):
-    df = pd.DataFrame({
-                    "retailer": [random.choice(["Mimovrste", "Amazon", "Microcenter"]) for _ in range(num)],
-                    "model": np.resize(["Dual OC", "Dual", "TUF GAming", "", "ROG Strix"], num), 
-                    "manufacturer": np.resize(["ASUS", "Zotac"], num),
-                    "price": [round(p + random.uniform(-p*0.1, p*0.1), 2) for _ in range(num)],
-                    "date": pd.date_range(datetime.datetime.today(), periods=num).tolist()
-                })
-    return df
     
 
 def init_urls():
