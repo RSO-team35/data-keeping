@@ -12,7 +12,7 @@ except:
     use_postgres = False
 
 if use_postgres:
-    SQLALCHEMY_DATABASE_URL = f'postgresql+psycopg2://{postgres_user}:{postgres_pass}@{postgres_host}/sql_app'
+    SQLALCHEMY_DATABASE_URL = f'postgresql+psycopg2://{postgres_user}:{postgres_pass}@{postgres_host}/postgres'
 
     engine = create_engine(
         SQLALCHEMY_DATABASE_URL
